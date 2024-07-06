@@ -38,33 +38,25 @@ pub fn setup() -> Result<String, Error> {
 
     let stdout = dag()
         .pkgx()?
+        .with_exec(vec!["mkdir", "-p", &format!("{}/.local/bin", home)])?
+        .with_exec(vec!["type wget || pkgx install wget"])?
         .with_exec(vec![
-            "sh",
-            "-c",
-            &format!("type drone-ssh > /dev/null || pkgx wget https://github.com/appleboy/drone-ssh/releases/download/v{}/drone-ssh-{}-{}-{}", drone_ssh_version, drone_ssh_version, os, arch),
+            &format!("type drone-ssh > /dev/null || wget https://github.com/appleboy/drone-ssh/releases/download/v{}/drone-ssh-{}-{}-{}", drone_ssh_version, drone_ssh_version, os, arch),
         ])?
         .with_exec(vec![
-            "sh",
-            "-c",
-            &format!("type drone-ssh > /dev/null || chmod a+x drone-ssh-*")])?
+            &format!("type drone-ssh > /dev/null || chmod a+x drone-ssh-{}-{}-{}", drone_ssh_version, os, arch)])?
         .with_exec(vec![
-            "sh",
-            "-c",
-            "type drone-ssh > /dev/null || mv drone-ssh-* $HOME./local/bin/drone-ssh",
+            &format!("type drone-ssh > /dev/null || mv drone-ssh-{}-{}-{} {}/.local/bin/drone-ssh", drone_ssh_version, os, arch, home),
         ])?
         .with_exec(vec![
-            "sh",
-            "-c",
-            &format!("type drone-scp > /dev/null || pkgx wget https://github.com/appleboy/drone-scp/releases/download/v{}/drone-scp-{}-{}-{}",drone_scp_version, drone_scp_version, os, arch),
+            &format!("type drone-scp > /dev/null || wget https://github.com/appleboy/drone-scp/releases/download/v{}/drone-scp-{}-{}-{}",drone_scp_version, drone_scp_version, os, arch),
         ])?
         .with_exec(vec![
-            "sh",
-            "-c",
-            &format!("type drone-scp > /dev/null || chmod a+x drone-scp-*")])?
+            &format!("type drone-scp > /dev/null || chmod a+x drone-scp-{}-{}-{}", 
+            drone_scp_version, os, arch
+          )])?
         .with_exec(vec![
-            "sh",
-            "-c",
-            "type drone-scp > /dev/null || mv drone-scp-* $HOME/.local/bin/drone-scp",
+            &format!("type drone-scp > /dev/null || mv drone-scp-{}-{}-{} {}/.local/bin/drone-scp", drone_scp_version, os, arch, home),
         ])?
         .stdout()?;
     Ok(stdout)
