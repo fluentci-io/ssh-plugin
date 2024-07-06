@@ -4,6 +4,12 @@ use fluentci_pdk::dag;
 pub fn setup() -> Result<String, Error> {
     let arch = dag().get_arch()?;
     let os = dag().get_os()?;
+    let home = dag().get_env("HOME")?;
+    let path = dag().get_env("PATH")?;
+    dag().set_envs(vec![(
+        "PATH".into(),
+        format!("{}/.local/bin:{}", home, path),
+    )])?;
 
     let arch = match arch.as_str() {
         "x86_64" => "amd64",
@@ -44,7 +50,7 @@ pub fn setup() -> Result<String, Error> {
         .with_exec(vec![
             "sh",
             "-c",
-            "type drone-ssh > /dev/null || mv drone-ssh-* /usr/local/bin/drone-ssh",
+            "type drone-ssh > /dev/null || mv drone-ssh-* $HOME./local/bin/drone-ssh",
         ])?
         .with_exec(vec![
             "sh",
@@ -58,7 +64,7 @@ pub fn setup() -> Result<String, Error> {
         .with_exec(vec![
             "sh",
             "-c",
-            "type drone-scp > /dev/null || mv drone-scp-* /usr/local/bin/drone-scp",
+            "type drone-scp > /dev/null || mv drone-scp-* $HOME/.local/bin/drone-scp",
         ])?
         .stdout()?;
     Ok(stdout)
