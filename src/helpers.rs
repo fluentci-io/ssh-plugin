@@ -40,7 +40,25 @@ pub fn setup() -> Result<String, Error> {
         .with_exec(vec![
             "sh",
             "-c",
+            &format!("type drone-ssh > /dev/null || chmod a+x drone-ssh-*")])?
+        .with_exec(vec![
+            "sh",
+            "-c",
+            "type drone-ssh > /dev/null || mv drone-ssh-* /usr/local/bin/drone-ssh",
+        ])?
+        .with_exec(vec![
+            "sh",
+            "-c",
             &format!("type drone-scp > /dev/null || pkgx wget https://github.com/appleboy/drone-scp/releases/download/v{}/drone-scp-{}-{}-{}",drone_scp_version, drone_scp_version, os, arch),
+        ])?
+        .with_exec(vec![
+            "sh",
+            "-c",
+            &format!("type drone-scp > /dev/null || chmod a+x drone-scp-*")])?
+        .with_exec(vec![
+            "sh",
+            "-c",
+            "type drone-scp > /dev/null || mv drone-scp-* /usr/local/bin/drone-scp",
         ])?
         .stdout()?;
     Ok(stdout)
