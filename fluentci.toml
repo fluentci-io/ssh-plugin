@@ -1,0 +1,8 @@
+[package]
+name = "ssh-plugin"
+version = "0.1.0"
+description = "CI Plugin for executing remote ssh commands"
+license = "MIT"
+authors = [
+  "Tsiry Sandratraina <tsiry.sndr@fluentci.io>"
+]
